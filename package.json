@@ -2,12 +2,13 @@
   "name": "com.cda.defacement",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "test",
-    "start": "nodemon index.js",
-    "build": "npm install",
-    "serve": "node index.js"
+    "postinstall": "node node_modules/puppeteer/install.js",
+    "start": "nodemon app.js",
+    "build": "npm ci",
+    "serve": "node app.js"
   },
   "author": "R@mius",
   "license": "ISC",
