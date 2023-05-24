@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "test",
+    "clean": "rm -rf node_modules",
     "postinstall": "node node_modules/puppeteer/install.js",
     "rebuild": "npm run clean && npm install && npm run build",
     "start": "nodemon app.js",
