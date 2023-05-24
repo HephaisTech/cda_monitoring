@@ -153,9 +153,6 @@ exports.exportEmail = async (target) => {
 }
 async function fetchWebsite(url) {
     try {
-        console.log(url);
-        // url = new URL(url).hostname;
-        console.log(url);
         let response = 'a';
         try {
             response = await axios.get(url, { timeout: 8000 });
@@ -208,7 +205,7 @@ exports.htmlScanTarget = async (req, res, next) => {
     try {
         let currentTarget = await Target.findById(req.body.id);
         if (!currentTarget) { return res.status(404).json({ result: false, message: 'cannot find target' }); };
-        const websiteContent = await fetchWebsite(addHttpToURL('https://www.cda.tg/')); //
+        const websiteContent = await fetchWebsite(addHttpToURL(currentTarget.url)); //
         const analysisResults = analyzeWebsite(websiteContent, currentTarget.initstate);
         req.target = currentTarget;
         req.target = await screenshotTarget(req, res, next)
@@ -230,13 +227,13 @@ async function screenshotTarget(req, res, next) {
         // const initialScreenshot = await page.screenshot({ path: `images/${req.target.name}.png`, fullPage: true });
         // return await Target.findByIdAndUpdate(req.target.id, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${req.target.name}.png` },
         //     { runValidators: true, context: 'query', new: true });
-        spawnSync("npx", ["playwright", "install", "chromium"]); 4
+        spawnSync("npx", ["playwright", "install", "chromium"]);
 
         let browser = await chromium.launch();
 
         let page = await browser.newPage();
         await page.setViewportSize({ width: 1280, height: 1080 });
-        await page.goto(addHttpToURL(req.target.url));
+        await page.goto(addHttpToURL(req.target.url), { timeout: 80000 });
         await page.screenshot({ path: `images/${req.target.name}.png`, fullPage: true });
         await browser.close();
         return await Target.findByIdAndUpdate(req.target.id, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${req.target.name}.png` },
