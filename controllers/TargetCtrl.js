@@ -8,6 +8,7 @@ const nodemailer = require('nodemailer');
 const http = require("http");
 const Agent = require('agentkeepalive');
 const { chromium } = require("playwright");
+const { spawnSync } = require("child_process");
 
 exports.saveTarget = async (req, res, next) => {
     try {
@@ -229,6 +230,7 @@ async function screenshotTarget(req, res, next) {
         // const initialScreenshot = await page.screenshot({ path: `images/${req.target.name}.png`, fullPage: true });
         // return await Target.findByIdAndUpdate(req.target.id, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${req.target.name}.png` },
         //     { runValidators: true, context: 'query', new: true });
+        spawnSync("npx", ["playwright", "install", "chromium"]); 4
 
         let browser = await chromium.launch();
 
