@@ -8,6 +8,7 @@ const TaegetSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
     url: { type: String, required: true },
     initstate: { type: String, required: true },
+    lastscreenShot: { type: String },
     scanCount: { type: Number, default: 0 },
     changeCount: { type: Number, default: 0 },
     isSafe: { type: Boolean, default: true }

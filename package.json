@@ -12,6 +12,7 @@
   "author": "R@mius",
   "license": "ISC",
   "dependencies": {
+    "agentkeepalive": "^4.3.0",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "cheerio": "^1.0.0-rc.12",

@@ -2,16 +2,14 @@
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
-const Mailgen = require('mailgen');
+
 const express = require('express');
-const https = require("https");
-const fetch = require('node-fetch');
-const nodemailer = require('nodemailer');
 const app = express()
 const port = 3000
 const path = require('path');
 const TargetRouter = require('./routers/TargetRoute');
 const authRoute = require('./routers/authRoute');
+const userRoute = require('./routers/userRoute');
 dotenv.config();
 const imagePath = express.static(path.join(__dirname, './images/'));
 
@@ -33,70 +31,7 @@ mongoose.connection.on('connected', () => {
 
 
 
-const exportEmail = async (req, res, next) => {
-    try {
-        // create a SMTP  
-        let config = {
-            service: 'gmail',
-            auth: {
-                user: 'zandjimarius@gmail.com',
-                pass: 'rkmffgpcxifbksft'
-            }
-        };
-        let transporter = nodemailer.createTransport(config);
 
-        let MailGenerator = new Mailgen({
-            theme: "default",
-            product: {
-                name: "Mailgen",
-                link: 'https://mailgen.js/'
-            }
-        });
-
-        let mail = {
-            body: {
-                name: "Daily Tuition",
-                intro: "Your bill has arrived!",
-                table: {
-                    data: [
-                        {
-                            item: "Nodemailer Stack Book",
-                            description: "A Backend application",
-                            price: "$10.99",
-                        }
-                    ]
-                },
-                outro: "Looking forward to do more business"
-            }
-        };
-
-        mail = MailGenerator.generate(mail)
-
-        let message = {
-            from: process.env.EMAIL,
-            to: 'jiwer75201@mevori.com', //codingchallenge@cda.tg
-            subject: "Place Order",
-            html: mail,
-            attachments: [
-                {
-                    filename: 'attach.jpg',
-                    path: __dirname + '/attach.jpg',
-                    cid: 'uniq-attach.jpg'
-                }
-            ]
-        };
-
-        transporter.sendMail(message).then(() => {
-            return res.status(201).json({
-                msg: "you should receive an email"
-            })
-        }).catch(error => {
-            return res.status(500).json({ err: error, message: error.message, })
-        });
-    } catch (error) {
-        next(error);
-    }
-}
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     // res.setHeader('Content-Type', 'Application/json');
@@ -109,7 +44,7 @@ app.use(express.json());
 
 
 
-
+app.use(cookieParser());
 
 
 
@@ -121,6 +56,7 @@ app.get('/', async (req, res) => {
 app.use('/images', imagePath);
 app.use('/target', TargetRouter);
 app.use('/auth', authRoute);
+app.use('/users', userRoute);
 
 app.use('*', function (req, res) {
 
