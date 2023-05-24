@@ -118,11 +118,11 @@ exports.exportEmail = async (target) => {
                 intro: "Defacement detected!",
                 table: {
                     data: [
-                        {
-                            Target: target.name,
-                            URL: target.url,
-                            changeCount: target.changeCount,
-                        }
+                        // {
+                        //     Target: target.name,
+                        //     URL: target.url,
+                        //     changeCount: target.changeCount,
+                        // }
                     ]
                 },
                 outro: "Looking forward to be more vigilant"
