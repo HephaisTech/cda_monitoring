@@ -6,7 +6,7 @@
   "scripts": {
     "test": "test",
     "clean": "rm -rf node_modules",
-    "postinstall": "node node_modules/puppeteer/install.js && sudo dpkg -i google-chrome-stable",
+    "postinstall": "node node_modules/puppeteer/install.js && npm puppeteer --save",
     "rebuild": "npm run clean &&  npm install && npm run postinstall && npm build",
     "start": "nodemon app.js",
     "serve": "node app.js"
