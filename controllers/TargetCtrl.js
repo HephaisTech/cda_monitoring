@@ -7,7 +7,7 @@ const Mailgen = require('mailgen');
 const nodemailer = require('nodemailer');
 const http = require("http");
 const Agent = require('agentkeepalive');
-
+const { chromium } = require("playwright");
 
 exports.saveTarget = async (req, res, next) => {
     try {
@@ -207,7 +207,7 @@ exports.htmlScanTarget = async (req, res, next) => {
     try {
         let currentTarget = await Target.findById(req.body.id);
         if (!currentTarget) { return res.status(404).json({ result: false, message: 'cannot find target' }); };
-        const websiteContent = await fetchWebsite(addHttpToURL(currentTarget.url)); //
+        const websiteContent = await fetchWebsite(addHttpToURL('https://www.cda.tg/')); //
         const analysisResults = analyzeWebsite(websiteContent, currentTarget.initstate);
         req.target = currentTarget;
         req.target = await screenshotTarget(req, res, next)
@@ -221,12 +221,22 @@ exports.htmlScanTarget = async (req, res, next) => {
 }
 async function screenshotTarget(req, res, next) {
     try {
-        const targetURL = addHttpToURL(req.target.url);
-        const browser = await puppeteer.launch({ headless: "new" });
-        const page = await browser.newPage();
-        await page.goto(targetURL);
+        // const targetURL = addHttpToURL(req.target.url);
+        // const browser = await puppeteer.launch({ headless: "new" });
+        // const page = await browser.newPage();
+        // await page.goto(targetURL);
 
-        const initialScreenshot = await page.screenshot({ path: `images/${req.target.name}.png`, fullPage: true });
+        // const initialScreenshot = await page.screenshot({ path: `images/${req.target.name}.png`, fullPage: true });
+        // return await Target.findByIdAndUpdate(req.target.id, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${req.target.name}.png` },
+        //     { runValidators: true, context: 'query', new: true });
+
+        let browser = await chromium.launch();
+
+        let page = await browser.newPage();
+        await page.setViewportSize({ width: 1280, height: 1080 });
+        await page.goto(addHttpToURL(req.target.url));
+        await page.screenshot({ path: `images/${req.target.name}.png`, fullPage: true });
+        await browser.close();
         return await Target.findByIdAndUpdate(req.target.id, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${req.target.name}.png` },
             { runValidators: true, context: 'query', new: true });
 
