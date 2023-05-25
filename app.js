@@ -6,13 +6,15 @@ const mongoose = require('mongoose');
 const express = require('express');
 const app = express()
 const port = 3000
+const cors = require('cors');
+
 const path = require('path');
 const TargetRouter = require('./routers/TargetRoute');
 const authRoute = require('./routers/authRoute');
 const userRoute = require('./routers/userRoute');
 dotenv.config();
 const imagePath = express.static(path.join(__dirname, './images/'));
-
+const pagepath = express.static(path.join(__dirname, './pages/'));
 
 // db connection
 
@@ -41,6 +43,7 @@ app.use((req, res, next) => {
 });
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors());
 
 
 
@@ -50,17 +53,19 @@ app.use(cookieParser());
 
 app.get('/', async (req, res) => {
 
-    res.status(200).json({ message: 'you rock!' })
+    res.sendFile(path.join(__dirname, '/pages/login/index.html'));
+
 
 })
 app.use('/images', imagePath);
+app.use('/pages', pagepath);
 app.use('/target', TargetRouter);
 app.use('/auth', authRoute);
 app.use('/users', userRoute);
 
 app.use('*', function (req, res) {
 
-    res.sendFile(path.join(__dirname, '../pages/404.html'));
+    res.render(path.join(__dirname, '../pages/404.html'));
 });
 
 

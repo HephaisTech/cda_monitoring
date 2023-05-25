@@ -54,12 +54,13 @@ exports.login = async (req, res, next) => {
         const token = Jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWTKEY, { expiresIn: "2h" });
 
         const { password, isAdmin, ...newUser } = user._doc;
-        res.cookie("CDATOKEN", token, {
-            httpOnly: true,
-        }).status(200).json({
+        res.setHeader('content-type', 'text/plain');
+        res.cookie("CDATOKEN", token, { httpOnly: true, });
+        res.status(200).json({
             result: true,
             message: `welcome ${newUser.email} !`,
             data: newUser,
+            url: "/pages/home/index.html"
         })
 
     } catch (error) {

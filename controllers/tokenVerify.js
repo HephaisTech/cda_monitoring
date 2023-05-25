@@ -20,6 +20,24 @@ exports.tokenVerify = (req, res, next) => {
 
 }
 
+exports.cookieCheck = (req, res, next) => {
+    try {
+        if (!req.cookies.CDATOKEN) return res.redirect('/');
+        let token = req.cookies.CDATOKEN;
+
+        Jwt.verify(token, process.env.JWTKEY, (err, user) => {
+            if (user) {
+                req.user = user;
+                return res.status(200).json({ result: true, message: "Token is valid !" })
+            }
+            return res.redirect('/');
+        })
+    } catch (error) {
+        next(error);
+    }
+
+}
+
 // exports.userVerify = (req, res, next) => {
 //     try {
 //         this.tokenVerify(req, res, () => {
