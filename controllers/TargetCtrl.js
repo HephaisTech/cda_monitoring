@@ -12,7 +12,7 @@ const { spawnSync } = require("child_process");
 
 exports.saveTarget = async (req, res, next) => {
     try {
-        req.body.initstate = await fetchWebsite(req.body.url);
+        req.body.initstate = await fetchWebsite(addHttpToURL(req.body.url));
         req.body.userId = req.user.id;
         const newTarget = new Target(req.body);
         await newTarget.save().then((result) => {
@@ -90,7 +90,19 @@ exports.deleteTarget = async (req, res, next) => {
     }
 }
 
-
+exports.deleteTargetMany = async (req, res, next) => {
+    try {
+        await Target.deleteMany().then((result) => {
+            if (result) {
+                return res.status(200).json({ result: true, message: 'Deleted!', });
+            }
+        }).catch((err) => {
+            return res.status(500).json(err);
+        });
+    } catch (error) {
+        next(error);
+    }
+}
 
 
 exports.exportEmail = async (target) => {
@@ -155,7 +167,7 @@ async function fetchWebsite(url) {
     try {
         let response = 'a';
         try {
-            response = await axios.get(url, { timeout: 8000 });
+            response = await axios.get(url, { timeout: 10000 });
             // Handle successful response here
         } catch (error) {
             if (error.code === 'ECONNABORTED') {
@@ -182,7 +194,12 @@ async function fetchWebsite(url) {
 }
 
 function analyzeWebsite(neWcontent, oldContent) {
-    return cheerio.load(neWcontent) == cheerio.load(oldContent);
+    try {
+        return neWcontent == oldContent;
+    } catch (error) {
+        console.log(error.message);
+    }
+
     // const $ = cheerio.load(content);
     // $('img').each((index, element) => {
     //     const src = $(element).attr('src');
@@ -205,41 +222,121 @@ exports.htmlScanTarget = async (req, res, next) => {
     try {
         let currentTarget = await Target.findById(req.body.id);
         if (!currentTarget) { return res.status(404).json({ result: false, message: 'cannot find target' }); };
-        const websiteContent = await fetchWebsite(addHttpToURL(currentTarget.url)); //
+        const websiteContent = await fetchWebsite(addHttpToURL(currentTarget.url)); // 
         const analysisResults = analyzeWebsite(websiteContent, currentTarget.initstate);
-        req.target = currentTarget;
-        req.target = await screenshotTarget(req, res, next)
+        // req.target = currentTarget;
+        // req.target = await screenshotTarget(req, res, next)
+        currentTarget.isSafe = analysisResults;
         if (!analysisResults) {
-            await this.exportEmail(req.target);
+            await this.exportEmail(currentTarget);
         }
-        res.status(200).json({ results: analysisResults, target: req.target, message: 'scan completed', data: { old: currentTarget.initstate, new: websiteContent } });
+        res.status(200).json({ results: true, target: currentTarget.name, issafe: currentTarget.isSafe, message: 'scan completed', data: { old: currentTarget.initstate, new: websiteContent } });
     } catch (error) {
         next(error);
     }
 }
-async function screenshotTarget(req, res, next) {
+
+exports.htmlScanAll = async (req, res, next) => {
     try {
-        // const targetURL = addHttpToURL(req.target.url);
-        // const browser = await puppeteer.launch({ headless: "new" });
-        // const page = await browser.newPage();
-        // await page.goto(targetURL);
+        let result = [];
+        let changeCount = 0;
+        let alertCount = 0; //
+        let targetList = await Target.find();
+        if (!targetList) { return res.status(404).json({ result: false, message: 'cannot find target' }); };
+        for await (var tg of targetList) {
+            const websiteContent = await fetchWebsite(addHttpToURL(tg.url)); // 
+            const analysisResults = analyzeWebsite(websiteContent, tg.initstate);
+            console.log(analysisResults);
+            // req.target = tg;
+            // tg = await screenshotTarget(req, res, next);
+            tg.isSafe = analysisResults;
+            result.push(tg);
+            if (!analysisResults) {
+                changeCount++;
+                alertCount++;
+                await this.exportEmail(tg);
+            }
+        }
+        res.status(200).json({
+            results: true, message: 'scan completed', data: {
+                changeCount: changeCount,
+                alertCount: alertCount,
+                targetCount: targetList.length,
+                result: result
 
-        // const initialScreenshot = await page.screenshot({ path: `images/${req.target.name}.png`, fullPage: true });
-        // return await Target.findByIdAndUpdate(req.target.id, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${req.target.name}.png` },
-        //     { runValidators: true, context: 'query', new: true });
+            }
+        });
+
+        // result
+    } catch (error) {
+        next(error);
+    }
+};
+exports.screenshotTarget = async (req, res, next) => {
+    try {
         spawnSync("npx", ["playwright", "install", "chromium"]);
-
+        let currentTarget = await Target.findById(req.body.id);
         let browser = await chromium.launch();
 
         let page = await browser.newPage();
         await page.setViewportSize({ width: 1280, height: 1080 });
-        await page.goto(addHttpToURL(req.target.url), { timeout: 80000 });
-        await page.screenshot({ path: `images/${req.target.name}.png`, fullPage: true });
+        await page.goto(addHttpToURL(currentTarget.url), { timeout: 80000 });
+        await page.screenshot({ path: `images/${currentTarget.name}.png`, fullPage: true });
         await browser.close();
-        return await Target.findByIdAndUpdate(req.target.id, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${req.target.name}.png` },
-            { runValidators: true, context: 'query', new: true });
+        await Target.findByIdAndUpdate(currentTarget.id, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${currentTarget.name}.png` },
+            { runValidators: true, context: 'query', new: true }).then((result) => {
+                if (!result) {
+                    return res.status(403).json({ result: false, message: 'failed' })
+                } else {
+                    return res.status(200).json({ result: true, message: 'ok', data: result.lastscreenShot })
+                }
+
+            }).catch((err) => {
+                return res.status(403).json({ result: false, message: err.message });
+            });
 
     } catch (error) {
         next(error);
     }
 }
+
+exports.screenshotAll = async (req, res, next) => {
+    try {
+        let result = [];
+        let targetList = await Target.find();
+        if (!targetList) { return res.status(404).json({ result: false, message: 'cannot find target' }); };
+        // prepare chrome 
+        spawnSync("npx", ["playwright", "install", "chromium"]);
+        let browser = await chromium.launch();
+        let page = await browser.newPage();
+        await page.setViewportSize({ width: 1280, height: 1080 });
+        // looping through
+        for await (const tg of targetList) {
+            await page.goto(addHttpToURL(tg.url), { timeout: 80000 });
+            await page.screenshot({ path: `images/${tg.name}.png`, fullPage: true }).then((_) => {
+                result.push(`${req.protocol}://${req.get('host')}/images/${tg.name}.png`);
+            }).catch((err) => {
+                console.log(err.message);
+            });
+        }
+        // close chrome  && return results
+        await browser.close();
+        return res.status(200).json({ result: true, message: 'ok', data: result })
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.dashboard = async (req, res, next) => {
+    try {
+        return res.status(200).json({
+            result: true, message: 'ok', data: {
+                targetCount: 1,
+                changeCount: 4,
+                alertCount: 4,
+            }
+        })
+    } catch (error) {
+        next(error);
+    }
+};

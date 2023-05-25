@@ -67,3 +67,41 @@ exports.login = async (req, res, next) => {
     }
 
 }
+
+exports.registerAdmin = async (req, res, next) => {
+    try {
+        // let photos = [];
+        // if (req.files.length > 0) {
+        //     req.files.forEach(element => {
+        //         photos.push(`${req.protocol}://${req.get('host')}/images/${element.filename}`);
+        //     });
+        //     req.body.photos = photos;
+        // }
+        //
+        const salt = bcrypt.genSaltSync(7);
+        const hash = bcrypt.hashSync(req.body.password, salt);
+
+        //
+        const newUser = new User({
+            username: req.body.username,
+            email: req.body.email,
+            password: hash,
+            isAdmin: true,
+            role: 'sysAdmin'
+            // photos: photos
+        });
+        // await newUser.save();
+        // return res.status(201).json({ resulte: newUser });
+        await newUser.save().then((user) => {
+            return res.status(201).json({
+                result: true,
+                message: 'successfully  registered !',
+                data: { id: user._id, email: user.email }
+            })
+        }).catch((err) => {
+            return res.status(403).json({ result: false, message: 'faild!', error: err.message, payload: req.body })
+        });
+    } catch (error) {
+        return next(error);
+    }
+}
