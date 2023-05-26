@@ -29,7 +29,7 @@ exports.register = async (req, res, next) => {
             return res.status(201).json({
                 result: true,
                 message: 'successfully  registered !',
-                data: { id: user._id, email: user.email }
+                data: { id: user._id, email: user.email, activated: user.activated }
             })
         }).catch((err) => {
             return res.status(403).json({ result: false, message: 'faild!', error: err.message, payload: req.body })
@@ -88,7 +88,8 @@ exports.registerAdmin = async (req, res, next) => {
             email: req.body.email,
             password: hash,
             isAdmin: true,
-            role: 'sysAdmin'
+            role: 'sysAdmin',
+            activated: true,
             // photos: photos
         });
         // await newUser.save();

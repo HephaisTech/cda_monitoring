@@ -28,7 +28,7 @@ exports.cookieCheck = (req, res, next) => {
         Jwt.verify(token, process.env.JWTKEY, (err, user) => {
             if (user) {
                 req.user = user;
-                return res.status(200).json({ result: true, message: "Token is valid !" })
+                return next();
             }
             return res.redirect('/');
         })

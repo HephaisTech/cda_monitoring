@@ -45,15 +45,31 @@ $('.tab a').on('click', function (e) {
 function login(data) {
   e.preventDefault();
   alert("success");
-}
+  // $.ajax({
+  //   type: "POST",
+  //   url: "localhost:3000/auth/login",
+  //   data: JSON.stringify(data), 
+  //   contentType: "application/json; charset=utf-8",
+  //   crossDomain: true,
+  //   dataType: "json",
+  //   success: function (data, status, jqXHR) {
 
+  //     alert("success"); 
+  //   },
+
+  //   error: function (jqXHR, status) {
+  //     // error handler
+  //     console.log(jqXHR);
+  //     alert('fail' + status.code);
+  //   }
+  // });
+}
 $('#fm').submit(function (event) {
   event.preventDefault();
   var formData = {
     email: $("#email").val(),
     password: $("#password").val(),
   };
-
   fetch("/auth/login", {
     method: 'POST',
     headers: {
@@ -84,3 +100,50 @@ function getFormData($form) {
 
   return indexed_array;
 }
+
+$('#fmr').submit(function (event) {
+  event.preventDefault();
+  var formData = {
+    email: $("#emailr").val(),
+    password: $("#passwordr").val(),
+    username: $("#usernamer").val(),
+  };
+  fetch("/auth/register", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData)
+  })
+    .then(response => response.json())
+    .then(result => {
+      if (result.result) {
+        if (result.data.activated) {
+          fetch("/auth/login", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+          })
+            .then(response => response.json())
+            .then(result => {
+              if (result.result) {
+                window.location.href = result.url;
+              } else {
+                alert(result.message);
+              }
+            })
+        } else {
+          alert('Waiting for Admin approbation! try login later');
+        }
+
+
+      } else {
+        alert(result.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+});
