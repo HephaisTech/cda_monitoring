@@ -17,40 +17,7 @@
       integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
       crossorigin="anonymous"
     />
-    <style>
-      .navbar-dark {
-        background-color: #343a40;
-        color: #ffffff;
-      }
-      .dashboard-container {
-        padding-top: 20px;
-      }
-
-      .card {
-        background-color: #179b77;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        font-weight: bold;
-        height: 100%;
-        cursor: pointer;
-        border: none;
-        box-shadow: 0 2px 5px white;
-        transition: transform 0.3s ease;
-        color: #ffffff;
-      }
-
-      .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-      }
-
-      .card-body {
-        padding: 20px;
-      }
-    </style>
+    <link rel="stylesheet" href="/pages/home/style.css" />
     <title>CDA Monitoring - Home</title>
   </head>
 
@@ -116,71 +83,58 @@
         <!-- /.container-fluid -->
       </nav>
     </section>
-
-    <section>
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6 col-lg-3">
-            <div class="card" onclick="location.href='#';">
-              <div class="card-body">
-                <h5 class="card-title">Card 1</h5>
-                <p class="card-text">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </p>
+    <head style="padding: auto">
+      <section>
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6 col-lg-3">
+              <div class="card" onclick="location.href='#';">
+                <div class="card-body">
+                  <h5 class="card-title">Total Targets</h5>
+                  <h3><p class="card-text" id="totalTargets"></p></h3>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="col-md-6 col-lg-3">
-            <div class="card" onclick="location.href='#';">
-              <div class="card-body">
-                <h5 class="card-title">Card 2</h5>
-                <p class="card-text">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </p>
+            <div class="col-md-6 col-lg-3">
+              <div class="card" onclick="location.href='#';">
+                <div class="card-body">
+                  <h5 class="card-title">Total scan</h5>
+                  <h3><p class="card-text" id="totalScan"></p></h3>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="col-md-6 col-lg-3">
-            <div class="card" onclick="location.href='#';">
-              <div class="card-body">
-                <h5 class="card-title">Card 3</h5>
-                <p class="card-text">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </p>
+            <div class="col-md-6 col-lg-3">
+              <div class="card" onclick="location.href='#';">
+                <div class="card-body">
+                  <h5 class="card-title">Total changes</h5>
+                  <h3><p class="card-text" id="totalchange"></p></h3>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="col-md-6 col-lg-3">
-            <div class="card" onclick="location.href='#';">
-              <div class="card-body">
-                <h5 class="card-title">Card 4</h5>
-                <p class="card-text">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </p>
+            <div class="col-md-6 col-lg-3">
+              <div class="card" onclick="location.href='#';">
+                <div class="card-body">
+                  <h5 class="card-title">Total alerts</h5>
+                  <h3><p class="card-text" id="totalalert"></p></h3>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </section>
+    </head>
+    <br />
+
+    <section>
+      <div class="container">
+        <div id="card-container" class="row"></div>
+      </div>
+
+      <div id="loader" class="loader">
+        <div class="loader-circle"></div>
+        <div class="loader-text">Scanning targets...</div>
       </div>
     </section>
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // Fetch data here
-        fetch("/target/allscan", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-          .then((response) => response.json())
-          .then(function (data) {
-            // Process the fetched data
-            console.log(data.message);
-          })
-          .catch(function (error) {
-            console.log("Error:", error);
-          });
-      });
-    </script>
+    <script src="/pages/home/script.js"></script>
   </body>
 </html>
