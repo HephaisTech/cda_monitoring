@@ -1,23 +1,65 @@
-*, *:before, *:after {
-  box-sizing: border-box;
+.column {
+  flex: 2;
+  padding: 20px;
 }
 
-html {
-  overflow-y: scroll;
+.column img:nth-child(2n) {
+  margin-left: 20px;
 }
 
-body {
-  background: #c1bdba;
-  font-family: 'Titillium Web', sans-serif;
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  text-align: center;
+  align-items: start;
 }
 
-a {
-  text-decoration: none;
-  color: #1ab188;
-  transition: .5s ease;
+.column img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin-bottom: 20px;
 }
-a:hover {
-  color: #179b77;
+.screen {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.image-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.image-cell {
+  padding: 10px;
+  text-align: center;
+}
+
+.image-cell img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.image-container h2 {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  color: white;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+h2 {
+  color: white;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .form {
@@ -28,50 +70,6 @@ a:hover {
   border-radius: 4px;
   box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
 }
-
-.tab-group {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 40px 0;
-}
-.tab-group:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-.tab-group li a {
-  display: block;
-  text-decoration: none;
-  padding: 15px;
-  background: rgba(160, 179, 176, 0.25);
-  color: #a0b3b0;
-  font-size: 20px;
-  float: left;
-  width: 50%;
-  text-align: center;
-  cursor: pointer;
-  transition: .5s ease;
-}
-.tab-group li a:hover {
-  background: #179b77;
-  color: #ffffff;
-}
-.tab-group .active a {
-  background: #1ab188;
-  color: #ffffff;
-}
-
-.tab-content > div:last-child {
-  display: none;
-}
-
-h1 {
-  text-align: center;
-  color: #ffffff;
-  font-weight: 300;
-  margin: 0 0 40px;
-}
-
 label {
   position: absolute;
   transform: translateY(6px);
@@ -100,7 +98,8 @@ label.highlight {
   color: #ffffff;
 }
 
-input, textarea {
+input,
+textarea {
   font-size: 22px;
   display: block;
   width: 100%;
@@ -111,9 +110,10 @@ input, textarea {
   border: 1px solid #a0b3b0;
   color: #ffffff;
   border-radius: 0;
-  transition: border-color .25s ease, box-shadow .25s ease;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
   outline: 0;
   border-color: #1ab188;
 }
@@ -150,13 +150,14 @@ textarea {
   font-size: 2rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: .1em;
+  letter-spacing: 0.1em;
   background: #1ab188;
   color: #ffffff;
   transition: all 0.5s ease;
   -webkit-appearance: none;
 }
-.button:hover, .button:focus {
+.button:hover,
+.button:focus {
   background: #179b77;
 }
 

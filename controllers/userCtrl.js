@@ -33,7 +33,7 @@ exports.getUsers = async (req, res, next) => {
     try {
         await User.find().then((Users) => {
             return Users ? res.status(200).json({ result: true, message: 'success', data: Users, })
-                : res.status(401).json({ message: `User not found  ` });
+                : res.status(401).json({ result: true, message: `User not found  ` });
         });
     } catch (error) {
         next(error);

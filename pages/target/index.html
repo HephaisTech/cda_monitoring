@@ -21,15 +21,6 @@
     <title>CDA Monitoring - Home</title>
   </head>
 
-  <!-- .form {
-  background: rgba(19, 35, 47, 0.9);
-  padding: 40px;
-  max-width: 600px;
-  margin: 40px auto;
-  border-radius: 4px;
-  box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
-} -->
-
   <body style="background-color: rgba(19, 35, 47, 0.9)">
     <section name="navigation">
       <nav class="navbar navbar-dark">
@@ -85,48 +76,37 @@
         <!-- /.container-fluid -->
       </nav>
     </section>
-    <head style="padding: auto">
-      <section>
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6 col-lg-3">
-              <div class="card" onclick="location.href='#';">
-                <div class="card-body">
-                  <h5 class="card-title">Total Targets</h5>
-                  <h3><p class="card-text" id="totalTargets"></p></h3>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-              <div class="card" onclick="location.href='#';">
-                <div class="card-body">
-                  <h5 class="card-title">Total scan</h5>
-                  <h3><p class="card-text" id="totalScan"></p></h3>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-              <div class="card" onclick="location.href='#';">
-                <div class="card-body">
-                  <h5 class="card-title">Total changes</h5>
-                  <h3><p class="card-text" id="totalchange"></p></h3>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-              <div class="card" onclick="location.href='#';">
-                <div class="card-body">
-                  <h5 class="card-title">Total alerts</h5>
-                  <h3><p class="card-text" id="totalalert"></p></h3>
-                </div>
-              </div>
-            </div>
-          </div>
+
+    <header class="page-title-bar">
+      <div class="container">
+        <h1
+          class="panel-title pull-left"
+          style="color: #fff; font-weight: bold"
+        >
+          Target List
+        </h1>
+        <div class="btn-toolbar pull-right">
+          <a
+            href="#"
+            class="btn btn-default btn-sm"
+            onclick="toggleTargetFormat()"
+          >
+            <span class="glyphicon glyphicon-plus"></span> add new
+          </a>
         </div>
-      </section>
-    </head>
+      </div>
+    </header>
+
     <br />
 
+    <section>
+      <div class="container" style="color: #fff">
+        <div class="column mb-5" id="column1">
+          <a href="#" id="targetName"></a>
+        </div>
+      </div>
+    </section>
+    <!--  -->
     <section>
       <div class="container">
         <div id="card-container" class="row"></div>
@@ -134,26 +114,48 @@
 
       <div id="loader" class="loader">
         <div class="loader-circle"></div>
-        <div class="loader-text">Scanning targets...</div>
+        <div class="loader-text">Screenshoting targets. Please wait...</div>
       </div>
     </section>
 
     <br />
-    <div id="imageModal" class="modal fade" role="dialog">
+
+    <div id="TargetModal" class="modal fade" role="dialog">
       <div class="modal-dialog modal-full">
         <div class="modal-content">
           <div class="modal-body">
-            <img id="modalImage" src="" alt="" class="img-responsive" />
-            <h4>Loading...</h4>
+            <form id="AddTargetForm" class="form-inline">
+              <label class="sr-only" for="inlineFormInputName2">Name</label>
+              <input
+                type="text"
+                class="form-control mb-2 mr-sm-2"
+                id="tgName"
+                placeholder="Target name"
+              />
+
+              <label class="sr-only" for="inlineFormInputGroupUsername2"
+                >URL</label
+              >
+              <input
+                type="text"
+                class="form-control mb-2 mr-sm-2"
+                id="targetURL"
+                placeholder="Target URL"
+              />
+
+              <button type="submit" class="btn btn-primary mb-2">
+                Add Target
+              </button>
+            </form>
           </div>
         </div>
       </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 
-    <script src="/pages/home/script.js"></script>
+    <script src="/pages/target/script.js"></script>
   </body>
 </html>

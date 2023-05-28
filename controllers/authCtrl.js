@@ -51,7 +51,7 @@ exports.login = async (req, res, next) => {
 
         // return user
 
-        const token = Jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWTKEY, { expiresIn: "2h" });
+        const token = Jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWTKEY, { expiresIn: "24h" });
 
         const { password, isAdmin, ...newUser } = user._doc;
         res.setHeader('content-type', 'text/plain');

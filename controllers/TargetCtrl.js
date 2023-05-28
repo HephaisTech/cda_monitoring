@@ -22,7 +22,7 @@ exports.saveTarget = async (req, res, next) => {
                 return res.status(200).json({ result: true, message: 'ok', data: result });
             }
         }).catch((err) => {
-            return res.status(500).json(err);
+            return res.status(500).json({ result: false, message: 'unable to save', error: err.message });
         });
     } catch (error) {
         next(error);
@@ -38,7 +38,7 @@ exports.getTarget = async (req, res, next) => {
                 return res.status(200).json({ result: true, message: 'ok', data: result });
             }
         }).catch((err) => {
-            return res.status(500).json(err);
+            return res.status(500).json({ result: false, message: 'unable to get', error: err.message });
         });
     } catch (error) {
         return next(error);
@@ -54,7 +54,7 @@ exports.getTargetId = async (req, res, next) => {
                 return res.status(200).json({ result: true, message: 'ok', data: result });
             }
         }).catch((err) => {
-            return res.status(500).json(err);
+            return res.status(500).json({ result: false, message: 'unable to get id', error: err.message });
         });
     } catch (error) {
         next(error);
@@ -69,7 +69,24 @@ exports.updateTarget = async (req, res, next) => {
                 return res.status(200).json({ result: true, message: 'ok', data: result });
             }
         }).catch((err) => {
-            return res.status(500).json(err);
+            return res.status(500).json({ result: false, message: 'unable to update id', error: err.message });
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+//
+exports.setSafeTarget = async (req, res, next) => {
+    try {
+        const websiteContent = await fetchWebsite(addHttpToURL(req.body.url)); // 
+        await Target.findByIdAndUpdate(req.body.id, { initstate: websiteContent, isSafe: true }, { runValidators: true, context: 'query', new: true }).then((result) => {
+            if (!result) {
+                return res.status(403).json({ result: false, message: 'unable to safe id :' + req.body.id });
+            } else {
+                return res.status(200).json({ result: true, message: 'ok', data: result });
+            }
+        }).catch((err) => {
+            return res.status(500).json({ result: false, message: 'something went wrong', error: err.message });
         });
     } catch (error) {
         next(error);
@@ -83,7 +100,7 @@ exports.deleteTarget = async (req, res, next) => {
                 return res.status(200).json({ result: true, message: 'Deleted!', });
             }
         }).catch((err) => {
-            return res.status(500).json(err);
+            return res.status(500).json({ result: false, message: 'something went wrong', error: err.message });
         });
     } catch (error) {
         next(error);
@@ -97,7 +114,7 @@ exports.deleteTargetMany = async (req, res, next) => {
                 return res.status(200).json({ result: true, message: 'Deleted!', });
             }
         }).catch((err) => {
-            return res.status(500).json(err);
+            return res.status(500).json({ result: false, message: 'something went wrong', error: err.message });
         });
     } catch (error) {
         next(error);
@@ -167,7 +184,7 @@ async function fetchWebsite(url) {
     try {
         let response = 'a';
         try {
-            response = await axios.get(url, { timeout: 10000 });
+            response = await axios.get(url, { timeout: 100000 });
             // Handle successful response here
         } catch (error) {
             if (error.code === 'ECONNABORTED') {
@@ -178,7 +195,7 @@ async function fetchWebsite(url) {
                 console.log('HTTP error:', error.response.status);
             } else if (error.request) {
                 // Handle network errors
-                console.log('Network error:', error.request);
+                console.log('Network error:', error.message);
             } else {
                 // Handle other errors
                 console.log('Error:', error.message);
@@ -227,6 +244,7 @@ exports.htmlScanTarget = async (req, res, next) => {
         // req.target = currentTarget;
         // req.target = await screenshotTarget(req, res, next)
         currentTarget.isSafe = analysisResults;
+        currentTarget.currentState = websiteContent;
         if (!analysisResults) {
             await this.exportEmail(currentTarget);
         }
@@ -246,10 +264,8 @@ exports.htmlScanAll = async (req, res, next) => {
         for await (var tg of targetList) {
             const websiteContent = await fetchWebsite(addHttpToURL(tg.url)); // 
             const analysisResults = analyzeWebsite(websiteContent, tg.initstate);
-            console.log(analysisResults);
-            // req.target = tg;
-            // tg = await screenshotTarget(req, res, next);
             tg.isSafe = analysisResults;
+            tg.currentState = websiteContent;
             result.push(tg);
             if (!analysisResults) {
                 changeCount++;
@@ -280,7 +296,7 @@ exports.screenshotTarget = async (req, res, next) => {
 
         let page = await browser.newPage();
         await page.setViewportSize({ width: 1280, height: 1080 });
-        await page.goto(addHttpToURL(currentTarget.url), { timeout: 80000 });
+        await page.goto(addHttpToURL(currentTarget.url), { timeout: 100000 });
         await page.screenshot({ path: `images/${currentTarget.name}.png`, fullPage: true });
         await browser.close();
         await Target.findByIdAndUpdate(currentTarget.id, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${currentTarget.name}.png` },
@@ -310,7 +326,7 @@ exports.screenshotAll = async (req, res, next) => {
         let browser = await chromium.launch();
         let page = await browser.newPage();
         await page.setViewportSize({ width: 1280, height: 1080 });
-        // looping through
+        // looping 
         for await (const tg of targetList) {
             await page.goto(addHttpToURL(tg.url), { timeout: 80000 });
             await page.screenshot({ path: `images/${tg.name}.png`, fullPage: true }).then((_) => {

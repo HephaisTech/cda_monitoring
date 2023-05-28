@@ -54,9 +54,10 @@
   margin-bottom: 20px;
 }
 .card.isSafe-false {
-  background-color: #d9534f;
+  background-color: #853131;
   color: #fff;
 }
+
 .loader-text {
   margin-top: 10px;
   color: #fff;
@@ -69,13 +70,37 @@
   margin-top: 10px;
   margin-bottom: 5px;
 }
+.card-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-loader .loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #179b77;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 2s linear infinite;
+}
 
 .card-buttons button {
   margin-top: 5px;
   margin-bottom: 5px;
 }
-
+.highlight {
+  background-color: yellow;
+}
 @keyframes loader-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spin {
   0% {
     transform: rotate(0deg);
   }

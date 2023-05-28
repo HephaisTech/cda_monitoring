@@ -51,10 +51,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 var button1 = document.createElement('button');
                 var button2 = document.createElement('button');
-                button1.classList.add('btn', 'btn-primary', 'btn-block');
-                button1.textContent = 'Scan this';
+                var button3 = document.createElement('button');
+                button1.classList.add('btn', 'btn-primary', 'btn-block', 'scrn');
+                button1.textContent = 'Screenshot';
                 button2.classList.add('btn', 'btn-warning', 'btn-block');
                 button2.textContent = 'Set as safe';
+                button3.classList.add('btn', 'btn-danger', 'btn-block');
+                button3.textContent = 'Delete';
 
 
                 var cardText = document.createElement('p');
@@ -63,7 +66,102 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 cardBody.appendChild(cardTitle);
                 cardBody.appendChild(cardText);
+
+                button3.addEventListener('click', async function () {
+                    let formData = { id: item._id };
+                    fetch('/target/destroy', {
+                        method: "POST",
+                        body: JSON.stringify(formData),
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    })
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (data) {
+                            if (data.result) {
+                                card.remove();
+                            }
+                            else {
+                                alert(data.message)
+                            }
+                        })
+                        .catch(function (error) {
+                            alert('Error:', error);
+                        });
+                });
+
+                button2.addEventListener('click', async function () {
+                    loader.style.display = 'block';
+                    let formData = { id: item._id, url: item.url };
+                    fetch('/target/safe', {
+                        method: "POST",
+                        body: JSON.stringify(formData),
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    })
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (data) {
+                            if (data.result) {
+                                card.classList.remove('isSafe-false');
+                            }
+                            else {
+                                alert(data.message)
+                            }
+                        })
+                        .catch(function (error) {
+                            alert('Error:', error);
+                        });
+                    loader.style.display = 'none';
+                });
+
+                button1.addEventListener('click', async function () {
+                    var modalImage = document.getElementById('modalImage');
+                    var card = button1.closest('.card');
+                    var cardLoader = document.createElement('div');
+                    cardLoader.classList.add('loader');
+                    cardLoader.classList.add('card-loader');
+                    button1.style.display = 'none';
+                    cardLoader.style.display = 'block';
+                    card.appendChild(cardLoader);
+                    $('#imageModal').modal('show');
+                    let formData = { id: item._id, url: item.url };
+                    fetch('/target/onescreen', {
+                        method: "POST",
+                        body: JSON.stringify(formData),
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    })
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (data) {
+                            if (data.result) {
+                                modalImage.src = data.data;
+                                button1.style.display = 'inline-block';
+                                cardLoader.remove();
+                            }
+                            else {
+                                alert('Not Screenshoted yet')
+                                button1.style.display = 'inline-block';
+                                cardLoader.remove();
+                            }
+                        })
+                        .catch(function (error) {
+                            alert('Error:', error);
+                            button1.style.display = 'inline-block';
+                            cardLoader.remove();
+                        });
+                    //
+                });
+
                 cardButtons.appendChild(button1);
+                cardButtons.appendChild(button3);
 
                 card.appendChild(cardBody);
                 cardContainer.appendChild(card);
@@ -85,3 +183,4 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
 });
+
