@@ -40,11 +40,6 @@ function fetchAndDisplayImages() {
             loader.style.display = 'none';
         });
 }
-
-fetchAndDisplayImages();
-
-setInterval(fetchAndDisplayImages, 10 * 60 * 1000);
-
 function toggleTargetFormat() {
     $('#TargetModal').modal('show');
 }
@@ -85,3 +80,7 @@ $('#AddTargetForm').submit(async function (event) {
         });
     this.reset();
 });
+fetchAndDisplayImages();
+
+setInterval(fetchAndDisplayImages, 10 * 60 * 1000);
+

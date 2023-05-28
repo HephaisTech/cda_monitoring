@@ -4,6 +4,7 @@ const Jwt = require("jsonwebtoken");
 
 exports.tokenVerify = (req, res, next) => {
     try {
+
         if (!req.cookies.CDATOKEN) return res.status(403).json({ result: false, message: "You are not authenticated!" });
         let token = req.cookies.CDATOKEN;
 
@@ -22,6 +23,7 @@ exports.tokenVerify = (req, res, next) => {
 
 exports.cookieCheck = (req, res, next) => {
     try {
+
         if (!req.cookies.CDATOKEN) return res.redirect('/');
         let token = req.cookies.CDATOKEN;
 

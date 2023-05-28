@@ -35,7 +35,12 @@ exports.getTarget = async (req, res, next) => {
             if (!result) {
                 return res.status(403).json({ result: false, message: 'unable to get' });
             } else {
-                return res.status(200).json({ result: true, message: 'ok', data: result });
+                let list = [];
+                for (const tg of result) {
+                    tg.initstate = '';
+                    list.push(tg)
+                }
+                return res.status(200).json({ result: true, message: 'ok', data: list });
             }
         }).catch((err) => {
             return res.status(500).json({ result: false, message: 'unable to get', error: err.message });
@@ -49,6 +54,7 @@ exports.getTargetId = async (req, res, next) => {
     try {
         await Target.findById(req.body.id).then((result) => {
             if (!result) {
+                result.initstate = '';
                 return res.status(403).json({ result: false, message: 'unable to get id' });
             } else {
                 return res.status(200).json({ result: true, message: 'ok', data: result });
@@ -295,8 +301,8 @@ exports.screenshotTarget = async (req, res, next) => {
         let browser = await chromium.launch();
 
         let page = await browser.newPage();
-        await page.setViewportSize({ width: 1280, height: 1080 });
-        await page.goto(addHttpToURL(currentTarget.url), { timeout: 100000 });
+        await page.setViewportSize({ width: 1080, height: 720 });
+        await page.goto(addHttpToURL(currentTarget.url), { timeout: 1000000 });
         await page.screenshot({ path: `images/${currentTarget.name}.png`, fullPage: true });
         await browser.close();
         await Target.findByIdAndUpdate(currentTarget.id, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${currentTarget.name}.png` },
