@@ -13,6 +13,10 @@ exports.register = async (req, res, next) => {
         //     req.body.photos = photos;
         // }
         //
+
+        if (req.body.password.length < 8) {
+            return res.status(401).json({ message: "password too wike !" });
+        }
         const salt = bcrypt.genSaltSync(7);
         const hash = bcrypt.hashSync(req.body.password, salt);
 

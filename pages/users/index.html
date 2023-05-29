@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css"
+      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/pages/home/style.css" />
+    <title>CDA Monitoring - Home</title>
+  </head>
+
+  <!-- .form {
+  background: rgba(19, 35, 47, 0.9);
+  padding: 40px;
+  max-width: 600px;
+  margin: 40px auto;
+  border-radius: 4px;
+  box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+} -->
+
+  <body style="background-color: rgba(19, 35, 47, 0.9)">
+    <section name="navigation">
+      <nav class="navbar navbar-dark">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button
+              type="button"
+              class="navbar-toggle collapsed"
+              data-toggle="collapse"
+              data-target="#bs-example-navbar-collapse-1"
+              aria-expanded="false"
+            >
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/pages/home/">CDA Monitoring</a>
+          </div>
+
+          <div
+            class="collapse navbar-collapse"
+            id="bs-example-navbar-collapse-1"
+          >
+            <ul class="nav navbar-nav">
+              <li>
+                <a href="/pages/target/index.html"
+                  >Targets <span class="sr-only">(current)</span></a
+                >
+              </li>
+              <li><a href="/pages/users/index.html">users</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <form class="navbar-form navbar-left">
+                <div class="form-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Search"
+                  />
+                </div>
+                <button type="submit" class="btn btn-default">Go</button>
+              </form>
+              <li>
+                <a href="/" id="logout" style="font-weight: bold; color: red"
+                  >Logout</a
+                >
+              </li>
+            </ul>
+          </div>
+          <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+      </nav>
+    </section>
+    <header class="page-title-bar">
+      <div class="container">
+        <h1
+          class="panel-title pull-left"
+          style="color: #fff; font-weight: bold"
+        >
+          User List
+        </h1>
+        <div class="btn-toolbar pull-right">
+          <a
+            href="#"
+            class="btn btn-default btn-sm"
+            onclick="toggleTargetFormat()"
+          >
+            <span class="glyphicon glyphicon-plus"></span> add new
+          </a>
+        </div>
+      </div>
+    </header>
+    <!--  -->
+    <br />
+    <div class="container-fluid" style="background-color: #fff">
+      <table class="table table-striped table-dark" id="usertable">
+        <thead>
+          <tr>
+            <th scope="col">email</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <br />
+    <div id="TargetModal" class="modal fade" role="dialog">
+      <div class="modal-dialog modal-full">
+        <div class="modal-content">
+          <div class="modal-body">
+            <form id="AddTargetForm" class="form">
+              <label class="sr-only" for="inlineFormInputName2">email</label>
+              <input
+                type="email"
+                class="form-control m-auto"
+                id="temail"
+                placeholder=" email"
+                required
+              />
+              <br />
+              <label class="sr-only" for="inlineFormInputName2">name</label>
+              <input
+                type="text"
+                class="form-control m-auto"
+                id="usernamer"
+                placeholder=" usernamer"
+                required
+              />
+              <br />
+              <label class="sr-only" for="inlineFormInputGroupUsername2"
+                >password</label
+              >
+              <input
+                type="password"
+                class="form-control m-auto"
+                id="tpassword"
+                placeholder=" password"
+                minlength="8"
+                required
+              />
+              <br />
+              <button type="submit" class="btn btn-primary m-auto">
+                Add user
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="loader" class="loader">
+      <div class="loader-circle"></div>
+      <div class="loader-text">Loading users. Please wait...</div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <script src="/pages/users/script.js"></script>
+  </body>
+</html>
