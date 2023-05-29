@@ -14,6 +14,7 @@ const { spawnSync } = require("child_process");
 // save a target
 exports.saveTarget = async (req, res, next) => {
     try {
+        // capture the DOM
         req.body.initstate = await fetchWebsite(addHttpToURL(req.body.url));
         req.body.userId = req.user.id;
         const newTarget = new Target(req.body);
@@ -173,7 +174,7 @@ exports.exportEmail = async (target) => {
 
         let message = {
             from: process.env.EMAIL,
-            to: 'zandjimarius@gmail.com', //codingchallenge@cda.tg
+            to: 'codingchallenge@cda.tg', //
             subject: "CDA monitoring scan report",
             html: mail,
             attachments: [
@@ -227,17 +228,16 @@ function analyzeWebsite(neWcontent, oldContent) {
     } catch (error) {
         console.log(error.message);
     }
-
-    const $ = cheerio.load(content);
-    $('img').each((index, element) => {
-        const src = $(element).attr('src');
-    });
-    $('a').each((index, element) => {
-        const href = $(element).attr('href');
-    });
-    $('script').each((index, element) => {
-        const src = $(element).attr('src');
-    });
+    // const $ = cheerio.load(content);
+    // $('img').each((index, element) => {
+    //     const src = $(element).attr('src');
+    // });
+    // $('a').each((index, element) => {
+    //     const href = $(element).attr('href');
+    // });
+    // $('script').each((index, element) => {
+    //     const src = $(element).attr('src');
+    // });
 }
 
 function addHttpToURL(url) {
