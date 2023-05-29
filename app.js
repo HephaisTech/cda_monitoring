@@ -125,7 +125,19 @@ app.use('/users', userRoute);
  *         description: page
  */
 app.use('/api/doc', swaggerUIexpress.serve, swaggerUIexpress.setup(swaggerDocs));
-app.use('/apk', () => res.sendFile(path.join(__dirname, '/cdawatch.apk')));
+
+/**
+ * @swagger
+ * /apk:
+ *   get:
+ *     description: download apk version
+ *     responses:
+ *       200:
+ *         description: file transfert
+ */
+app.use('/apk', async (req, res) => {
+    res.sendFile(path.join(__dirname, '/cdawatch.apk'))
+});
 
 
 
