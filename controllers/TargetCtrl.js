@@ -196,7 +196,7 @@ async function fetchWebsite(url) {
     try {
         let response = 'a';
         try {
-            response = await axios.get(url, { timeout: 100000 });
+            response = await axios.get(url, { timeout: 1000000 });
             // Handle successful response here
         } catch (error) {
             if (error.code === 'ECONNABORTED') {
@@ -343,7 +343,7 @@ exports.screenshotAll = async (req, res, next) => {
 
         // looping 
         for await (const tg of targetList) {
-            await page.goto(addHttpToURL(tg.url), { timeout: 80000 });
+            await page.goto(addHttpToURL(tg.url), { timeout: 1000000 });
             await page.screenshot({ path: `images/${tg.name}.png`, fullPage: true }).then((_) => {
                 result.push(`${req.protocol}://${req.get('host')}/images/${tg.name}.png`);
             }).catch((err) => {
