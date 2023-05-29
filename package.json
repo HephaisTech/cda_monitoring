@@ -7,7 +7,7 @@
     "test": "test",
     "clean": "rm -rf node_modules",
     "postinstall": "npx playwright install",
-    "rebuild": "npm run clean &&  npm install && npm run postinstall && npm build",
+    "rebuild": " npm install && npm run postinstall && npm build",
     "start": "nodemon app.js",
     "serve": "node app.js"
   },
@@ -30,6 +30,8 @@
     "nodemailer": "^6.9.2",
     "nodemon": "^2.0.22",
     "playwright": "^1.34.2",
-    "puppeteer": "^20.3.0"
+    "puppeteer": "^20.3.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.3"
   }
 }

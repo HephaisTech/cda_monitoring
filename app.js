@@ -4,22 +4,26 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 
 const express = require('express');
-const app = express()
-const port = 3000
+const app = express();
+const port = 3000;
 const cors = require('cors');
 var bodyParser = require('body-parser');
+
+const swaggerJSdoc = require('swagger-jsdoc');
+const swaggerUIexpress = require('swagger-ui-express');
+
 const path = require('path');
 const TargetRouter = require('./routers/TargetRoute');
 const authRoute = require('./routers/authRoute');
 const userRoute = require('./routers/userRoute');
 const { cookieCheck } = require('./controllers/tokenVerify');
+const { version } = require('process');
 dotenv.config();
 const imagePath = express.static(path.join(__dirname, './images/'));
 const pagepath = express.static(path.join(__dirname, './pages/'));
 const guardpath = express.static(path.join(__dirname, './guard/'));
 
 // db connection
-
 mongoose.set('strictQuery', false);
 const connect = async () => {
     try {
@@ -34,6 +38,26 @@ mongoose.connection.on('connected', () => {
 });
 
 
+const swaggerOptions = {
+    swaggerDefinition: {
+        info: {
+            title: 'CDA target scan Api/doc',
+            version: '1.0.0',
+            Author: 'ZANDJI yao Marius B.'
+        },
+        securityDefinition: {
+            bearerAuth: {
+                type: 'Cookie',
+                name: 'CDATOKEN',
+                in: 'header',
+            },
+        },
+
+    },
+    apis: ['app.js', './routers/authRoute.js', './routers/TargetRoute.js', './routers/userRoute.js']
+};
+
+const swaggerDocs = swaggerJSdoc(swaggerOptions);
 
 
 app.use((req, res, next) => {
@@ -49,6 +73,15 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 5
 app.use(cors());
 app.use(cookieParser());
 
+/**
+ * @swagger
+ * /guard:
+ *   get:
+ *     description: Go the Auth page
+ *     responses:
+ *       200:
+ *         description: Returns html page
+ */
 app.use('/guard', guardpath);
 app.use('/auth', authRoute);
 app.get('/', async (req, res) => {
@@ -56,15 +89,41 @@ app.get('/', async (req, res) => {
     res.sendFile(path.join(__dirname, '/guard/login/index.html'));
 
 })
-
-
-
-
+/**
+ * @swagger
+ * /images:
+ *   get:
+ *     description: Get image file ressource
+ *     responses:
+ *       200:
+ *         description: image url
+ */
 app.use('/images', imagePath);
+/**
+ * @swagger
+ * /pages:
+ *   get:
+ *     description: Go to a spécific page
+ *     responses:
+ *       200:
+ *         description: page
+ */
 app.use('/pages', cookieCheck, pagepath);
 app.use('/target', TargetRouter);
 
 app.use('/users', userRoute);
+
+/**
+ * @swagger
+ * /api/doc:
+ *   get:
+ *     description: Go to API Documentation
+ *     responses:
+ *       200:
+ *         description: page
+ */
+app.use('/api/doc', swaggerUIexpress.serve, swaggerUIexpress.setup(swaggerDocs));
+
 
 app.use('*', function (req, res) {
     res.sendFile(path.join(__dirname, '/guard/404/index.html'));
@@ -81,8 +140,5 @@ app.use((err, req, res, next) => {
     });
 
 })
-
-
-
 
 app.listen(port, () => { connect(); console.log(`CDA listening on port ${port}!`) })

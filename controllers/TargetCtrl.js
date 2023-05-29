@@ -10,6 +10,8 @@ const Agent = require('agentkeepalive');
 const { chromium } = require("playwright");
 const { spawnSync } = require("child_process");
 
+
+// save a target
 exports.saveTarget = async (req, res, next) => {
     try {
         req.body.initstate = await fetchWebsite(addHttpToURL(req.body.url));
@@ -28,7 +30,7 @@ exports.saveTarget = async (req, res, next) => {
         next(error);
     }
 };
-
+// get targets list
 exports.getTarget = async (req, res, next) => {
     try {
         await Target.find().then((result) => {
@@ -50,6 +52,7 @@ exports.getTarget = async (req, res, next) => {
     }
 
 }
+// get target id
 exports.getTargetId = async (req, res, next) => {
     try {
         await Target.findById(req.body.id).then((result) => {
@@ -66,6 +69,7 @@ exports.getTargetId = async (req, res, next) => {
         next(error);
     }
 }
+// update target object
 exports.updateTarget = async (req, res, next) => {
     try {
         await Target.findByIdAndUpdate(req.body.id, req.body, { runValidators: true, context: 'query', new: true }).then((result) => {
@@ -81,7 +85,7 @@ exports.updateTarget = async (req, res, next) => {
         next(error);
     }
 }
-//
+// set target as save // not attacked
 exports.setSafeTarget = async (req, res, next) => {
     try {
         const websiteContent = await fetchWebsite(addHttpToURL(req.body.url)); // 
@@ -98,7 +102,7 @@ exports.setSafeTarget = async (req, res, next) => {
         next(error);
     }
 }
-
+// delete one 
 exports.deleteTarget = async (req, res, next) => {
     try {
         await Target.findByIdAndDelete(req.body.id).then((result) => {
@@ -112,7 +116,7 @@ exports.deleteTarget = async (req, res, next) => {
         next(error);
     }
 }
-
+// delete many
 exports.deleteTargetMany = async (req, res, next) => {
     try {
         await Target.deleteMany().then((result) => {
@@ -127,7 +131,7 @@ exports.deleteTargetMany = async (req, res, next) => {
     }
 }
 
-
+// send eamil to amin
 exports.exportEmail = async (target) => {
     try {
         // create a SMTP  
@@ -186,6 +190,7 @@ exports.exportEmail = async (target) => {
         console.error(error);
     }
 }
+//get target current DOM
 async function fetchWebsite(url) {
     try {
         let response = 'a';
@@ -215,7 +220,7 @@ async function fetchWebsite(url) {
         return null;
     }
 }
-
+// check if same to initial
 function analyzeWebsite(neWcontent, oldContent) {
     try {
         return neWcontent == oldContent;
@@ -223,16 +228,16 @@ function analyzeWebsite(neWcontent, oldContent) {
         console.log(error.message);
     }
 
-    // const $ = cheerio.load(content);
-    // $('img').each((index, element) => {
-    //     const src = $(element).attr('src');
-    // });
-    // $('a').each((index, element) => {
-    //     const href = $(element).attr('href');
-    // });
-    // $('script').each((index, element) => {
-    //     const src = $(element).attr('src');
-    // });
+    const $ = cheerio.load(content);
+    $('img').each((index, element) => {
+        const src = $(element).attr('src');
+    });
+    $('a').each((index, element) => {
+        const href = $(element).attr('href');
+    });
+    $('script').each((index, element) => {
+        const src = $(element).attr('src');
+    });
 }
 
 function addHttpToURL(url) {
@@ -241,6 +246,7 @@ function addHttpToURL(url) {
     }
     return url;
 }
+// Make à scan on one target and send Alert if false
 exports.htmlScanTarget = async (req, res, next) => {
     try {
         let currentTarget = await Target.findById(req.body.id);
@@ -259,7 +265,7 @@ exports.htmlScanTarget = async (req, res, next) => {
         next(error);
     }
 }
-
+//Make à scan on all targets and send Alert if false
 exports.htmlScanAll = async (req, res, next) => {
     try {
         let result = [];
@@ -294,6 +300,8 @@ exports.htmlScanAll = async (req, res, next) => {
         next(error);
     }
 };
+
+// take à screenshot of  a Target
 exports.screenshotTarget = async (req, res, next) => {
     try {
         spawnSync("npx", ["playwright", "install", "chromium"]);
@@ -321,7 +329,7 @@ exports.screenshotTarget = async (req, res, next) => {
         next(error);
     }
 }
-
+/// // take à screenshot of  all Target
 exports.screenshotAll = async (req, res, next) => {
     try {
         let result = [];
@@ -350,16 +358,16 @@ exports.screenshotAll = async (req, res, next) => {
     }
 };
 
-exports.dashboard = async (req, res, next) => {
-    try {
-        return res.status(200).json({
-            result: true, message: 'ok', data: {
-                targetCount: 1,
-                changeCount: 4,
-                alertCount: 4,
-            }
-        })
-    } catch (error) {
-        next(error);
-    }
-};
+// exports.dashboard = async (req, res, next) => {
+//     try {
+//         return res.status(200).json({
+//             result: true, message: 'ok', data: {
+//                 targetCount: 1,
+//                 changeCount: 4,
+//                 alertCount: 4,
+//             }
+//         })
+//     } catch (error) {
+//         next(error);
+//     }
+// };
