@@ -84,6 +84,8 @@ app.use(cookieParser());
  */
 app.use('/guard', guardpath);
 app.use('/auth', authRoute);
+
+//Point d'entrée
 app.get('/', async (req, res) => {
     res.clearCookie("CDATOKEN");
     res.sendFile(path.join(__dirname, '/guard/login/index.html'));
@@ -123,6 +125,8 @@ app.use('/users', userRoute);
  *         description: page
  */
 app.use('/api/doc', swaggerUIexpress.serve, swaggerUIexpress.setup(swaggerDocs));
+app.use('/apk', () => res.sendFile(path.join(__dirname, '/cdawatch.apk')));
+
 
 
 app.use('*', function (req, res) {
