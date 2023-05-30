@@ -54,9 +54,7 @@ exports.login = async (req, res, next) => {
         if (!valid) return res.status(401).json({ message: "email or password incorrect !" });
 
         // return user
-
         const token = Jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWTKEY, { expiresIn: "24h" });
-
         const { password, isAdmin, ...newUser } = user._doc;
         res.setHeader('content-type', 'text/plain');
         res.cookie("CDATOKEN", token, { httpOnly: true, });
@@ -75,14 +73,6 @@ exports.login = async (req, res, next) => {
 
 exports.registerAdmin = async (req, res, next) => {
     try {
-        // let photos = [];
-        // if (req.files.length > 0) {
-        //     req.files.forEach(element => {
-        //         photos.push(`${req.protocol}://${req.get('host')}/images/${element.filename}`);
-        //     });
-        //     req.body.photos = photos;
-        // }
-        //
         const salt = bcrypt.genSaltSync(7);
         const hash = bcrypt.hashSync(req.body.password, salt);
 
@@ -96,8 +86,6 @@ exports.registerAdmin = async (req, res, next) => {
             activated: true,
             // photos: photos
         });
-        // await newUser.save();
-        // return res.status(201).json({ resulte: newUser });
         await newUser.save().then((user) => {
             return res.status(201).json({
                 result: true,

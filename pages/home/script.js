@@ -108,6 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         .then(function (data) {
                             if (data.result) {
                                 card.classList.remove('isSafe-false');
+                                window.location.reload();
                             }
                             else {
                                 alert(data.message)
