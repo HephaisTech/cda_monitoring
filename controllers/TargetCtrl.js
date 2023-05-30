@@ -313,8 +313,10 @@ exports.screenshotTarget = async (req, res, next) => {
         await page.goto(addHttpToURL(currentTarget.url), { timeout: 1000000 });
         await page.screenshot({ path: `images/${currentTarget.name}.png`, fullPage: true });
         await browser.close();
-        await Target.findByIdAndUpdate(currentTarget.id, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${currentTarget.name}.png` },
-            { runValidators: true, context: 'query', new: true }).then((result) => {
+        await currentTarget.update({ _id: currentTarget.id }, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${currentTarget.name}.png` },
+            { runValidators: true, context: 'query', new: true })
+            // await Target.findByIdAndUpdate(currentTarget.id, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${currentTarget.name}.png` }, { runValidators: true, context: 'query', new: true })
+            .then((result) => {
                 if (!result) {
                     return res.status(403).json({ result: false, message: 'failed' })
                 } else {
