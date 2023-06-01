@@ -308,7 +308,7 @@ exports.screenshotTarget = async (req, res, next) => {
         let browser = await chromium.launch();
 
         let page = await browser.newPage();
-        await page.setViewportSize({ width: 1080, height: 720 });
+        await page.setViewportSize({ width: 800, height: 600 });
         await page.goto(addHttpToURL(currentTarget.url), { timeout: 1000000 });
         await page.screenshot({ path: `images/${currentTarget.name}.png`, fullPage: true });
         await browser.close();
@@ -340,7 +340,7 @@ exports.screenshotAll = async (req, res, next) => {
         spawnSync("npx", ["playwright", "install", "chromium"]);
         let browser = await chromium.launch();
         let page = await browser.newPage();
-        await page.setViewportSize({ width: 1080, height: 720 });
+        await page.setViewportSize({ width: 800, height: 600 });
 
         // looping 
         for await (const tg of targetList) {
