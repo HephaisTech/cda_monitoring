@@ -341,7 +341,7 @@ exports.screenshotAll = async (req, res, next) => {
         for await (const tg of targetList) {
             await page.goto(addHttpToURL(tg.url), { timeout: 1000000 });
             await page.screenshot({ path: `images/${tg.name}.png`, fullPage: true }).then(async (_) => {
-                await Target.findByIdAndUpdate(tg.id, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${currentTarget.name}.png` }, { new: true });
+                await Target.findByIdAndUpdate(tg.id, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${tg.name}.png` }, { new: true });
                 result.push(`${req.protocol}://${req.get('host')}/images/${tg.name}.png`);
             }).catch((err) => {
                 console.log(err.message);
