@@ -1,5 +1,4 @@
 const Target = require('../models/target');
-const puppeteer = require('puppeteer');
 const fs = require('fs');
 const axios = require('axios');
 const cheerio = require('cheerio');
