@@ -310,7 +310,7 @@ exports.screenshotTarget = async (req, res, next) => {
         let page = await browser.newPage();
         await page.setViewportSize({ width: 800, height: 600 });
         await page.goto(addHttpToURL(currentTarget.url), { timeout: 1000000 });
-        await page.screenshot({ path: `images/${currentTarget.name}.png`, fullPage: true });
+        await page.screenshot({ path: `../images/${currentTarget.name}.png`, fullPage: true });
         await browser.close();
         // await currentTarget.update({ _id: currentTarget.id }, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${currentTarget.name}.png` },  { new: true })
         await Target.findByIdAndUpdate(req.body.id, { lastscreenShot: `${req.protocol}://${req.get('host')}/images/${currentTarget.name}.png` }, { new: true })
@@ -343,7 +343,7 @@ exports.screenshotAll = async (req, res, next) => {
         // looping 
         for await (const tg of targetList) {
             await page.goto(addHttpToURL(tg.url), { timeout: 1000000 });
-            await page.screenshot({ path: `images/${tg.name}.png`, fullPage: true }).then((_) => {
+            await page.screenshot({ path: `../images/${tg.name}.png`, fullPage: true }).then((_) => {
                 result.push(`${req.protocol}://${req.get('host')}/images/${tg.name}.png`);
             }).catch((err) => {
                 console.log(err.message);
