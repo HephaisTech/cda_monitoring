@@ -23,7 +23,7 @@ const imagePath = express.static(path.join(__dirname, './images/'));
 const pagepath = express.static(path.join(__dirname, './pages/'));
 const guardpath = express.static(path.join(__dirname, './guard/'));
 
-// db connection
+// db connection ...
 mongoose.set('strictQuery', false);
 const connect = async () => {
     try {
