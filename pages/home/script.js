@@ -129,6 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     button1.style.display = 'none';
                     cardLoader.style.display = 'block';
                     card.appendChild(cardLoader);
+                    modalImage.src = '';
                     $('#imageModal').modal('show');
                     let formData = { id: item._id, url: item.url };
                     fetch('/target/onescreen', {
