@@ -144,7 +144,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         .then(function (data) {
                             if (data.result) {
                                 modalImage.src = data.data;
-                                console.log(data.data);
                                 button1.style.display = 'inline-block';
                                 cardLoader.remove();
                             }

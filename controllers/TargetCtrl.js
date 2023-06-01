@@ -318,7 +318,7 @@ exports.screenshotTarget = async (req, res, next) => {
                     return res.status(200).json({ result: true, message: 'ok', data: result.lastscreenShot })
                 }
             }).catch((err) => {
-                return res.status(403).json({ result: false, message: err.message });
+                return res.status(403).json({ result: false, message: err.message }); //
             });
 
     } catch (error) {
